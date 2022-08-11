@@ -155,3 +155,63 @@ lvim.builtin.treesitter.highlight.enabled = true
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
 -- }
+
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  {
+    exe = "prettier",
+    filetypes = {
+      "javascriptreact",
+      "javascript",
+      "typescriptreact",
+      "typescript",
+      "json",
+      "svelte",
+      "markdown",
+    },
+  },
+  {
+    exe = "rustfmt",
+    filetypes = {
+      "rust"
+    },
+  },
+}
+
+-- ESLint
+local linters = require "lvim.lsp.null-ls.linters"
+linters.setup {
+  {
+    exe = "eslint",
+    filetypes = {
+      "javascriptreact",
+      "javascript",
+      "typescriptreact",
+      "typescript",
+      "svelte",
+      "vue",
+    },
+  },
+}
+
+vim.cmd [[
+" If you press ctrl + j and there is a pane below your pane, switch to it.
+" Otherwhise create a new split pane below and switch to it.
+function! WinMove(key)
+    let t:curwin = winnr()
+    exec "wincmd ".a:key
+    if (t:curwin == winnr())
+        if (match(a:key,'[jk]'))
+            wincmd v
+        else
+            wincmd s
+        endif
+        exec "wincmd ".a:key
+    endif
+endfunction
+
+nnoremap <silent> <C-h> :call WinMove('h')<CR>
+nnoremap <silent> <C-j> :call WinMove('j')<CR>
+nnoremap <silent> <C-k> :call WinMove('k')<CR>
+nnoremap <silent> <C-l> :call WinMove('l')<CR>
+]]
